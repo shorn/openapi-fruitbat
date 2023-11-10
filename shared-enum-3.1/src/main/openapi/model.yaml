@@ -1,0 +1,26 @@
+openapi: 3.1.0
+
+info:
+  title: shared models
+  version: 1.0.0
+
+components:
+  schemas:
+    VegetablePallet:
+      title: VegetablePallet
+      type: object
+      required: [type]
+      properties:
+        type: {$ref: '#/components/schemas/Vegetable'}
+    VegetableBasket:
+      title: VegetableBasket
+      type: object
+      required: [type]
+      properties:
+        type: {$ref: '#/components/schemas/Vegetable'}
+    Vegetable:
+      title: Vegetable
+      type: string
+      enum:
+        - asparagus
+        - broccoli

@@ -1,0 +1,115 @@
+import static os.Util.osCmd
+
+plugins {
+  id 'java'
+}
+
+repositories {
+  mavenCentral()
+}
+
+ext {
+  specFilename = 'shared-enum.yaml'
+  generateDirName = "src/main/generated"
+
+  imageTag = 'openapitools/openapi-generator-cli:v7.0.1'
+
+  openapiSrcDir = 'src/main/openapi'
+  stagingDir = "$project.buildDir/dockerStaging"
+  springGenDir = "$project.buildDir/generated/spring"
+  tsGenDir = "${project.buildDir}/generated/typescript"
+}
+
+dependencies{
+  compileOnly 'jakarta.platform:jakarta.jakartaee-web-api:10.0.0'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+}
+
+sourceSets{
+  main {
+    java{
+      srcDirs += [springGenDir]
+    }
+    resources {
+      // this is done so that IDEA knows that there's source in here
+      srcDir openapiSrcDir
+    }
+  }
+}
+
+tasks.register('stageApiIdl', Copy) {
+  destinationDir = file(stagingDir)
+  group="openapi"
+  doFirst {
+    delete file(stagingDir)
+  }
+
+  from(openapiSrcDir)
+}
+
+tasks.register('cleanSpringGeneratedFiles', Delete) {
+  group="openapi"
+  delete springGenDir
+}
+
+tasks.register('cleanTypescriptGeneratedFiles', Delete) {
+  group="openapi"
+  delete tsGenDir
+}
+
+tasks.register('cleanGeneratedFiles', Delete) {
+  group="openapi"
+  dependsOn cleanTypescriptGeneratedFiles, cleanSpringGeneratedFiles
+}
+
+
+/* use cli via docker because the current gradle plugin fails on windows with
+relative `$ref` references with OpenApi 3.1.0.
+See https://github.com/swagger-api/swagger-parser/issues/1886
+*/
+tasks.register('generateSpringServerInterface', Exec) {
+  group="openapi"
+  dependsOn stageApiIdl, cleanSpringGeneratedFiles
+
+  ignoreExitValue = true
+
+  inputs.dir tasks.named('stageApiIdl').map { it.destinationDir }
+  outputs.dir springGenDir
+
+  commandLine osCmd('docker', 'run', '--rm',
+    '--volume', "${file(stagingDir).path}:/input",
+    '--volume', "${file(springGenDir).path}:/output",
+    imageTag,
+    'generate',
+    '--input-spec', "/input/${specFilename}",
+    '--config', '/input/spring-generator-config.json',
+    '--output', '/output',
+  )
+}
+/* tell Gradle to generate the openapi code before compiling it (without this,
+idl compile will succeed, but spring compile will fail in a full build).
+I would think the openApiGenerate "apiFirst" config should do this,
+but it didn't seem to actually do that.
+ */
+tasks.compileJava.dependsOn tasks.generateSpringServerInterface
+
+tasks.register('generateTypescriptClient', Exec) {
+  group="openapi"
+  dependsOn stageApiIdl, cleanTypescriptGeneratedFiles
+
+  ignoreExitValue = true
+
+  inputs.dir tasks.named('stageApiIdl').map { it.destinationDir }
+  outputs.dir springGenDir
+
+  commandLine osCmd('docker', 'run', '--rm',
+    '--volume', "${file(stagingDir).path}:/input",
+    '--volume', "${file(tsGenDir).path}:/output",
+    imageTag,
+    'generate',
+    '--input-spec', "/input/${specFilename}",
+    '--config', '/input/typescript-generator-config.json',
+    '--output', '/output',
+  )
+}
+
