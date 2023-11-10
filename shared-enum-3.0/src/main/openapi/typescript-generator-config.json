@@ -1,0 +1,20 @@
+{
+  "generatorName": "typescript-fetch",
+  "sourceFolder": "",
+  "validateSpec": true,
+  "generateApiDocumentation": false,
+  "generateApiTests": false,
+  "generateModelDocumentation": false,
+  "generateModelTests": false,
+
+  "globalProperties": {
+    "models": "",
+    "apis": "",
+    "supportingFiles": ""
+  },
+
+  "useTags": true,
+  "disallowAdditionalPropertiesIfNotPresent": false,
+  "allowUnicodeIdentifiers": false
+
+}

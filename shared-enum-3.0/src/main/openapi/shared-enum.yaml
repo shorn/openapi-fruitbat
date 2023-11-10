@@ -1,0 +1,73 @@
+openapi: 3.0.3
+
+info:
+  title: Fruitbat API
+  version: 1.0.0
+
+paths:
+  /generateFruitPallet:
+    get:
+      operationId: generateFruitPallet
+      tags: [Fruit]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FruitPallet'
+  /generateFruitBasket:
+    get:
+      operationId: generateFruitBasket
+      tags: [Fruit]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FruitBasket'
+  /generateVegetablePallet:
+    get:
+      operationId: generateVegetablePallet
+      tags: [Vegetable]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'model.yaml#/components/schemas/VegetablePallet'
+  /generateVegetableBasket:
+    get:
+      operationId: generateVegetableBasket
+      tags: [Vegetable]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml#/components/schemas/VegetableBasket'
+
+
+components:
+  schemas:
+    FruitPallet:
+      title: FruitPallet
+      type: object
+      required: [type]
+      properties:
+        type: {$ref: '#/components/schemas/Fruit'}
+    FruitBasket:
+      title: FruitBasket
+      type: object
+      required: [type]
+      properties:
+        type: {$ref: '#/components/schemas/Fruit'}
+    Fruit:
+      title: Fruit
+      type: string
+      enum:
+        - apple
+        - banana

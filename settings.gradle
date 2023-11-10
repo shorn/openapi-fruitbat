@@ -1,3 +1,4 @@
 rootProject.name = 'fruitbat'
 
 include ":shared-enum-3.1"
+include ":shared-enum-3.0"

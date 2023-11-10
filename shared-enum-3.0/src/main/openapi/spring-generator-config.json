@@ -1,0 +1,31 @@
+{
+  "generatorName": "spring",
+  "sourceFolder": "",
+  "modelPackage": "fruitbat.model",
+  "apiPackage": "fruitbat.endpoint",
+  "validateSpec": true,
+  "generateApiDocumentation": false,
+  "generateApiTests": false,
+  "generateModelDocumentation": false,
+  "generateModelTests": false,
+
+  "globalProperties": {
+    "models": "",
+    "apis": ""
+  },
+
+  "useTags": true,
+  "useSpringBoot3": true,
+  "useSpringController": false,
+  "interfaceOnly": true,
+  "skipDefaultInterface": true,
+  "useOptional": true,
+  "openApiNullable": false,
+  "dateLibrary": "java8",
+  "useBeanValidation": false,
+  "documentationProvider": "none",
+  "disallowAdditionalPropertiesIfNotPresent": false,
+  "delegatePattern": false,
+  "useResponseEntity": false,
+  "allowUnicodeIdentifiers": false
+}
