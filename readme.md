@@ -1,6 +1,8 @@
 Demonstrate a problem with OpenAPI 3.1 code generation for enums that are
 defined via a `$ref`.
 
+See https://github.com/OpenAPITools/openapi-generator/issues/17026
+
 Shows the problem with Enum classes not being shared across types when
 generating code where the type is pulled in from a different file via a `$ref`.
 

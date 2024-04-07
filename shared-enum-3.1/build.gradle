@@ -12,7 +12,10 @@ ext {
   specFilename = 'shared-enum.yaml'
   generateDirName = "src/main/generated"
 
-  imageTag = 'openapitools/openapi-generator-cli:v7.0.1'
+  imageTag = 'openapitools/openapi-generator-cli:v7.4.0'
+
+  // 7.5.0-SNAPSHOT when I tried it on 2024-04-07, still didn't work
+  // imageTag = 'openapitools/openapi-generator-cli:latest'
 
   openapiSrcDir = 'src/main/openapi'
   stagingDir = "$project.buildDir/dockerStaging"
@@ -46,20 +49,41 @@ tasks.register('stageApiIdl', Copy) {
 
   from(openapiSrcDir)
 }
+tasks.register('pullLatestDockerImage', Exec) {
+  group = "openapi"
+  ignoreExitValue = true
+
+  commandLine osCmd('docker', 'pull', imageTag
+  )
+}
+
+tasks.register('printOpenApiVersion', Exec) {
+  group="openapi"
+
+  ignoreExitValue = true
+
+  commandLine osCmd('docker', 'run', '--rm',
+    imageTag,
+    'version',
+  )
+}
 
 tasks.register('cleanSpringGeneratedFiles', Delete) {
   group="openapi"
   delete springGenDir
+  outputs.upToDateWhen { false }
 }
 
 tasks.register('cleanTypescriptGeneratedFiles', Delete) {
   group="openapi"
   delete tsGenDir
+  outputs.upToDateWhen { false }
 }
 
 tasks.register('cleanGeneratedFiles', Delete) {
   group="openapi"
   dependsOn cleanTypescriptGeneratedFiles, cleanSpringGeneratedFiles
+  outputs.upToDateWhen { false }
 }
 
 
@@ -69,7 +93,7 @@ See https://github.com/swagger-api/swagger-parser/issues/1886
 */
 tasks.register('generateSpringServerInterface', Exec) {
   group="openapi"
-  dependsOn stageApiIdl, cleanSpringGeneratedFiles
+  dependsOn stageApiIdl, cleanSpringGeneratedFiles, printOpenApiVersion
 
   ignoreExitValue = true
 
