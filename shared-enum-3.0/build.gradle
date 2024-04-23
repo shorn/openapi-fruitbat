@@ -12,7 +12,7 @@ ext {
   specFilename = 'shared-enum.yaml'
   generateDirName = "src/main/generated"
 
-  imageTag = 'openapitools/openapi-generator-cli:v7.0.1'
+  imageTag = 'openapitools/openapi-generator-cli:v7.5.0'
 
   openapiSrcDir = 'src/main/openapi'
   stagingDir = "$project.buildDir/dockerStaging"
@@ -50,11 +50,13 @@ tasks.register('stageApiIdl', Copy) {
 tasks.register('cleanSpringGeneratedFiles', Delete) {
   group="openapi"
   delete springGenDir
+  outputs.upToDateWhen { false }
 }
 
 tasks.register('cleanTypescriptGeneratedFiles', Delete) {
   group="openapi"
   delete tsGenDir
+  outputs.upToDateWhen { false }
 }
 
 tasks.register('cleanGeneratedFiles', Delete) {

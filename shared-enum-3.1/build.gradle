@@ -12,9 +12,9 @@ ext {
   specFilename = 'shared-enum.yaml'
   generateDirName = "src/main/generated"
 
-  imageTag = 'openapitools/openapi-generator-cli:v7.4.0'
+  imageTag = 'openapitools/openapi-generator-cli:v7.5.0'
 
-  // 7.5.0-SNAPSHOT when I tried it on 2024-04-07, still didn't work
+  // 7.6.0-SNAPSHOT when I tried it on 2024-04-23, still didn't work
   // imageTag = 'openapitools/openapi-generator-cli:latest'
 
   openapiSrcDir = 'src/main/openapi'
